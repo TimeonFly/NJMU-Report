@@ -130,6 +130,13 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
 
+    def mail_sender(self):  # 发送邮件
+        mail_msg = """
+        <p>{}</p>
+        """.format(self.info)
+        dic = {'From':'健康打卡','To':'通知','info':mail_msg,'subject': self.result}
+        Mail(dic)
+
     def main(self):  # 执行函数
         try:
             self.combine()
@@ -146,13 +153,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         finally:
             self.mail_sender()
 
-    def mail_sender(self):  # 发送邮件
-        mail_msg = """
-        <p>{}</p>
-        """.format(self.info)
-        dic = {'From':'健康打卡','To':'通知','info':mail_msg,'subject': self.result}
-        s = Mail(dic)
 
-
-c = PostInfo()
-c.main()
+def main_handler():
+    c = PostInfo()
+    c.main()
