@@ -1,10 +1,10 @@
 id:
-    username: '19210311'  # 学号
-    password: 'qazwsx1230'  # 网上办事大厅登录密码
+    username: ''  # 学号
+    password: ''  # 网上办事大厅登录密码
 mail:
-    sender: 'timeonfly@163.com'  # 发送通知邮件的邮箱
-    password: 'cpt0821'  # 邮箱授权码，注意是授权码
-    receivers: 'timeonfly@163.com'  # 接受邮件的邮箱
-    smtp_server: 'smtp.163.com'  # 邮箱的smtp服务器地址，可在邮箱的设置中找到
+    sender: ''  # 发送通知邮件的邮箱
+    password: ''  # 邮箱授权码，注意是授权码
+    receivers: ''  # 接受邮件的邮箱
+    smtp_server: ''  # 邮箱的smtp服务器地址，可在邮箱的设置中找到
 
     
