@@ -18,52 +18,40 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         self.result = ''
         self.info = ''
         with open('ID.yaml', 'r') as f:
-            Id = yaml.load(f.read(), Loader=yaml.FullLoader)['id']
-        self.username = Id['username']
-        s = SchoolLogin(Id)
-        s.main_login()
-        self.cookie = s.health()
-        self.FinalUrl = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/T_HEALTH_DAILY_INFO_SAVE.do'
+            bs_id = yaml.load(f.read(), Loader=yaml.FullLoader)['id']
+        self.username = bs_id['username']
+        s = SchoolLogin(bs_id)
+        self.cookie = s.main_login()
         self.dict = {}  # 该字典从旧提交信息中获取数据，并合并新构造的日期，为最终的提交参数
 
     def get_old_info(self):  # 从文件中获取旧数据，旧数据由浏览器post请求获取
         with open('疫情打卡提交信息.txt', 'r', encoding='utf-8') as f:
             strings = f.readlines()
-        KeyInfo = []
-        ValueInfo = []
+        key_info = []
+        value_info = []
         for string in strings:
             string = string.replace('/n', '')
-            ValueInfo.append(re.findall(r'(?<=: ).*', string)[0])
-            KeyInfo.append(re.findall(r'.*(?=: )', string)[0])
-            self.dict = dict(zip(KeyInfo, ValueInfo))
+            value_info.append(re.findall(r'(?<=: ).*', string)[0])
+            key_info.append(re.findall(r'.*(?=: )', string)[0])
+            self.dict = dict(zip(key_info, value_info))
 
-    def time_create(self):  # 创造提交时间
+    def create_info(self):  # 参数整合，形成最终提交的self.dict
         t = datetime.now()
         date1 = t.strftime("%Y-%m-%d")
-        wid = date1+'-'+self.username
-        CZRQ = t.strftime("%Y-%m-%d %H:%M:%S")
+        wid = date1 + '-' + self.username
+        czrq = t.strftime("%Y-%m-%d %H:%M:%S")
         s1 = random.randint(1, 59)
         s2 = random.randint(1, 59)
         m1 = random.randint(1, 5)
-        Ftime1 = ' 08:{:0>2}:{:0>2}'.format(m1, s1)
-        Ftime2 = ' 08:{:0>2}:{:0>2}'.format(m1 + 2, s2)
-        CREATED_AT = date1 + Ftime2
-        FILL_TIME = date1 + Ftime1
-        return [CZRQ, CREATED_AT, FILL_TIME, date1, wid]
-
-    def combine(self):  # 参数整合，形成最终提交的self.dict
-        ltime = self.time_create()  # 创造提交时间
-        self.get_old_info()  # 获取旧的提交数据
-        CZRQ = ltime[0]
-        CREATED_AT = ltime[1]
-        FILL_TIME = ltime[2]
-        NEED_CHECKIN_DATE = ltime[3]
-        WID = ltime[4]
-        self.dict['WID'] = WID
-        self.dict['CZRQ'] = CZRQ
-        self.dict['CREATED_AT'] = CREATED_AT
-        self.dict['FILL_TIME'] = FILL_TIME
-        self.dict['NEED_CHECKIN_DATE'] = NEED_CHECKIN_DATE
+        ftime1 = ' 08:{:0>2}:{:0>2}'.format(m1, s1)
+        ftime2 = ' 08:{:0>2}:{:0>2}'.format(m1 + 2, s2)
+        created_at = date1 + ftime2
+        fill_time = date1 + ftime1
+        self.dict['WID'] = wid
+        self.dict['CZRQ'] = czrq
+        self.dict['CREATED_AT'] = created_at
+        self.dict['FILL_TIME'] = fill_time
+        self.dict['NEED_CHECKIN_DATE'] = date1
 
     def new_query(self):  # 此函数用于查询是否有新的url指向，返回的是今天需要提交的问题
         url1 = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock.do'
@@ -72,12 +60,12 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         params = {'*json': '1'}
         p = requests.post(url1, headers=headers, cookies=self.cookie, params=params)
         dict1 = json.loads(p.text)
-        InfoSave = dict1['models'][1]
-        if InfoSave['modelName'] != 'T_HEALTH_DAILY_INFO':
+        info_save = dict1['models'][1]
+        if info_save['modelName'] != 'T_HEALTH_DAILY_INFO':
             raise InfoException
         else:
             new_dict = {}
-            list1 = InfoSave['params']
+            list1 = info_save['params']
             for i in list1:
                 new_dict[i['name']] = i['caption']
             return new_dict
@@ -122,9 +110,9 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             dict1 = json.loads(p.text)
             list1 = dict1['datas']['code']['rows']
             dict2 = {}
-            for eachdict in list1:
-                dict2[eachdict['id']] = eachdict['name']
-            target = re.findall('(?<=604790c7-c5d9-487e-a38a-83bb3baa8092/).*?(?=\.do)', url)[
+            for each_dict in list1:
+                dict2[each_dict['id']] = each_dict['name']
+            target = re.findall(r'(?<=604790c7-c5d9-487e-a38a-83bb3baa8092/).*?(?=\.do)', url)[
                 0]  # 此正则表达式用于获取url链接中如TODAY_SITUATION的部分
             target_situation = target + '_DISPLAY'
             dict3 = {self.dict[target]: self.dict[target_situation]}
@@ -134,12 +122,13 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         mail_msg = """
         <p>{}</p>
         """.format(self.info)
-        dic = {'From':'健康打卡','To':'通知','info':mail_msg,'subject': self.result}
+        dic = {'From': '健康打卡', 'To': '通知', 'info': mail_msg, 'subject': self.result}
         Mail(dic)
 
     def main(self):  # 执行函数
         try:
-            self.combine()
+            self.get_old_info()  # 获取旧的提交数据
+            self.create_info()
             self.check()
         except InfoException:
             self.result = 'Fail'
@@ -147,7 +136,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/T_HEALTH_DAILY_INFO_SAVE.do'
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62'}
-            p = requests.post(url, headers=headers, cookies=self.cookie, params=self.dict)
+            requests.post(url, headers=headers, cookies=self.cookie, params=self.dict)
             self.result = 'Success'
             self.info = '今日打卡成功'
         finally:
