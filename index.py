@@ -40,8 +40,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         date1 = t.strftime("%Y-%m-%d")
         wid = date1 + '-' + self.username
         czrq = t.strftime("%Y-%m-%d %H:%M:%S")
-        s1 = random.randint(1, 59)
-        s2 = random.randint(1, 59)
+        s1, s2 = random.sample(range(1, 59), 2)
         m1 = random.randint(1, 5)
         ftime1 = ' 08:{:0>2}:{:0>2}'.format(m1, s1)
         ftime2 = ' 08:{:0>2}:{:0>2}'.format(m1 + 2, s2)
@@ -80,7 +79,6 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             raise InfoException
         else:
             self.check_info()
-            print('无信息更改')
 
     def assert_dict(self, given, result):  # 此函数用于判读given字典是否包含在result字典之中
         for key in given:
@@ -92,28 +90,28 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
                 raise InfoException
 
     def check_info(self):  # 此函数用于查询旧的选项是否在今日的选项之中
-        lurl = ['http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_SITUATION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_NAT_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_VACCINE_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_BODY_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_HEALTH_CODE.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/CONTACT_HISTORY.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_ISOLATE_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/TODAY_TARRY_CONDITION.do',
-                'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/BY1.do']
+        target_list = ['TODAY_SITUATION.do',
+                       'TODAY_CONDITION.do',
+                       'TODAY_NAT_CONDITION.do',
+                       'TODAY_VACCINE_CONDITION.do',
+                       'TODAY_BODY_CONDITION.do',
+                       'TODAY_HEALTH_CODE.do',
+                       'CONTACT_HISTORY.do',
+                       'TODAY_ISOLATE_CONDITION.do',
+                       'TODAY_TARRY_CONDITION.do',
+                       'BY1.do']
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62',
             'Referer': 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/index.do?amp_sec_version_=1&gid_=VE5MMnl0UndHbGJybG1zbEdpTCsyV0cyZDM0bGJFbzFEN2t4RGpSZ04vemFKQ2NFSllkSHVKWkhYQVN5UEdwTnNrcldkVnQ3NWV6dW1rNHlLaTByR0E9PQ&EMAP_LANG=zh&THEME=teal'}
-        for url in lurl:
-            p = requests.post(url, headers=headers, cookies=self.cookie)
+        for target in target_list:
+            target_url = url+target
+            url = 'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/'
+            p = requests.post(target_url, headers=headers, cookies=self.cookie)
             dict1 = json.loads(p.text)
             list1 = dict1['datas']['code']['rows']
             dict2 = {}
             for each_dict in list1:
                 dict2[each_dict['id']] = each_dict['name']
-            target = re.findall(r'(?<=604790c7-c5d9-487e-a38a-83bb3baa8092/).*?(?=\.do)', url)[
-                0]  # 此正则表达式用于获取url链接中如TODAY_SITUATION的部分
             target_situation = target + '_DISPLAY'
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
