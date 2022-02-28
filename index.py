@@ -3,22 +3,35 @@ import re
 import requests
 import json
 import random
+import sys
 from common import SchoolLogin, Mail
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import yaml
 
 
-class InfoException(BaseException):
+def get_time_str():
+    utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+    bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+    return bj_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
+def log(content):
+    print(get_time_str() + ' ' + str(content))
+    sys.stdout.flush()
+
+
+class InfoException(Exception):
     """信息更改异常"""
-    pass
+    def __init__(self, info):
+        log(info)
 
 
 class PostInfo(object):  # 提交函数，用于提交打卡信息
     def __init__(self):
         self.result = ''
         self.info = ''
-        with open('ID.yaml', 'r') as f:
-            bs_id = yaml.load(f.read(), Loader=yaml.FullLoader)['id']
+        with open('ID.yaml', 'r', encoding='utf-8') as f:
+            bs_id = yaml.load(f.read())['id']
         self.username = bs_id['username']
         s = SchoolLogin(bs_id)
         self.cookie = s.main_login()
@@ -61,7 +74,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         dict1 = json.loads(p.text)
         info_save = dict1['models'][1]
         if info_save['modelName'] != 'T_HEALTH_DAILY_INFO':
-            raise InfoException
+            raise InfoException('modelName已更改')
         else:
             new_dict = {}
             list1 = info_save['params']
@@ -75,8 +88,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         old_query = set(self.dict.keys())
         if new_query - old_query != set():
             self.info = '出现新的问题{}'.format(new_query - old_query)
-            # print('出现新的问题{}'.format(new_query - old_query))
-            raise InfoException
+            raise InfoException(self.info)
         else:
             self.check_info()
 
@@ -87,25 +99,25 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             else:
                 # print('{}不在{}之中'.format(given,result))
                 self.info = '信息已发生更改，{}不在{}之中'.format(given, result)
-                raise InfoException
+                raise InfoException(self.info)
 
     def check_info(self):  # 此函数用于查询旧的选项是否在今日的选项之中
-        target_list = ['TODAY_SITUATION.do',
-                       'TODAY_CONDITION.do',
-                       'TODAY_NAT_CONDITION.do',
-                       'TODAY_VACCINE_CONDITION.do',
-                       'TODAY_BODY_CONDITION.do',
-                       'TODAY_HEALTH_CODE.do',
-                       'CONTACT_HISTORY.do',
-                       'TODAY_ISOLATE_CONDITION.do',
-                       'TODAY_TARRY_CONDITION.do',
-                       'BY1.do']
+        target_list = ['TODAY_SITUATION',
+                       'TODAY_CONDITION',
+                       'TODAY_NAT_CONDITION',
+                       'TODAY_VACCINE_CONDITION',
+                       'TODAY_BODY_CONDITION',
+                       'TODAY_HEALTH_CODE',
+                       'CONTACT_HISTORY',
+                       'TODAY_ISOLATE_CONDITION',
+                       'TODAY_TARRY_CONDITION',
+                       'BY1']
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62',
             'Referer': 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/index.do?amp_sec_version_=1&gid_=VE5MMnl0UndHbGJybG1zbEdpTCsyV0cyZDM0bGJFbzFEN2t4RGpSZ04vemFKQ2NFSllkSHVKWkhYQVN5UEdwTnNrcldkVnQ3NWV6dW1rNHlLaTByR0E9PQ&EMAP_LANG=zh&THEME=teal'}
         for target in target_list:
-            target_url = url+target
             url = 'http://ehall.njmu.edu.cn/qljfwappnew/code/604790c7-c5d9-487e-a38a-83bb3baa8092/'
+            target_url = url + target + '.do'
             p = requests.post(target_url, headers=headers, cookies=self.cookie)
             dict1 = json.loads(p.text)
             list1 = dict1['datas']['code']['rows']
@@ -137,10 +149,16 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             requests.post(url, headers=headers, cookies=self.cookie, params=self.dict)
             self.result = 'Success'
             self.info = '今日打卡成功'
+            t = datetime.now()
+            log(t.strftime('%m-%d')+'打卡成功')
         finally:
             self.mail_sender()
 
 
-def main_handler():
+def main_handler(event, context):
+    log('脚本开始执行...')
     c = PostInfo()
     c.main()
+
+
+main_handler(None, None)
