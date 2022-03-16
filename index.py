@@ -22,6 +22,7 @@ def log(content):
 
 class InfoException(Exception):
     """信息更改异常"""
+
     def __init__(self, info):
         log(info)
 
@@ -37,6 +38,15 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         self.cookie = s.main_login()
         self.dict = {}  # 该字典从旧提交信息中获取数据，并合并新构造的日期，为最终的提交参数
 
+    def get_wid(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62'}
+        url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/getMyTodayReportWid.do'
+        params = {'pageNumber': '1'}
+        p = requests.post(url, headers=headers, cookies=self.cookie, params=params)
+        info_dict = json.loads(p.text)['datas']['getMyTodayReportWid']['rows'][0]
+        return info_dict['WID']
+
     def get_old_info(self):  # 从文件中获取旧数据，旧数据由浏览器post请求获取
         with open('疫情打卡提交信息.txt', 'r', encoding='utf-8') as f:
             strings = f.readlines()
@@ -49,9 +59,9 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.dict = dict(zip(key_info, value_info))
 
     def create_info(self):  # 参数整合，形成最终提交的self.dict
+        wid = self.get_wid()
         t = datetime.now()
         date1 = t.strftime("%Y-%m-%d")
-        wid = date1 + '-' + self.username
         czrq = t.strftime("%Y-%m-%d %H:%M:%S")
         s1, s2 = random.sample(range(1, 59), 2)
         m1 = random.randint(1, 5)
@@ -150,7 +160,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.result = 'Success'
             self.info = '今日打卡成功'
             t = datetime.now()
-            log(t.strftime('%m-%d')+'打卡成功')
+            log(t.strftime('%m-%d') + '打卡成功')
         finally:
             self.mail_sender()
 

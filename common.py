@@ -28,7 +28,7 @@ class SchoolLogin:
         headers1 = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 Edg/92.0.902.67'}
         r = self.session.get(url1, headers=headers1)
-        r.encoding='utf-8'
+        r.encoding = 'utf-8'
         html = r.text
         LT = re.findall('name="lt" value="(.*)"', html)[0]
         key = re.findall('id="pwdDefaultEncryptSalt" value="(.*?)"', html)[0]
@@ -59,7 +59,7 @@ class SchoolLogin:
                                         'Referer': 'http://ehall.njmu.edu.cn/new/index.html'})
         res4 = self.session.get(destination, headers=headers5, allow_redirects=False)
         Location = res4.headers["Location"]
-        r=self.session.get(Location, headers=headers5)
+        self.session.get(Location, headers=headers5)
         cookies_dict = requests.utils.dict_from_cookiejar(self.session.cookies)
         return cookies_dict
 

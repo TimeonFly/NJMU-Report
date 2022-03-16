@@ -7,6 +7,7 @@ import json
 
 class GetInfo(object):
     def __init__(self):
+        self.wid = None
         self.cookie = None
         self.username = None
         self.headers = {
@@ -36,12 +37,8 @@ class GetInfo(object):
                     'Origin': 'http://ehall.njmu.edu.cn',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84',
                     'Referer': 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/index.do?amp_sec_version_=1&gid_=YmliV2M2Skp0Z1BjV2RBVkl4YjZIMGZzSG5DSFdjMllLWnZuVVU3SkFxU0V0TUtkT0NRVUR1UDd6VnpQREd3N1hpN2RVQkNkblNmNFpzNE5ZM3BPQnc9PQ&EMAP_LANG=zh&THEME=golden'}
-        t = datetime.now()
-        date1 = t.strftime("%Y-%m-%d")
-        wid = date1 + '-' + self.username
         data = {'pageNumber': '1',
-                'pageSize': '10',
-                'WID': wid}
+                'pageSize': '10'}
         r = requests.post(get_url, headers=headers1, cookies=self.cookie, data=data)
         info_dict = json.loads(r.text)['datas']['getMyDailyReportDatas']['rows'][0]
         return info_dict
@@ -59,7 +56,7 @@ class GetInfo(object):
                     line = i + ': '
                 else:
                     line = i + ': ' + info_dict[i]
-                f.write(line+'\n')
+                print(line, file=f)
 
     def main(self):
         self.login()
