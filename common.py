@@ -9,7 +9,7 @@ from email.header import Header
 
 
 class SchoolLogin:
-    def __init__(self, init_id):
+    def __init__(self):
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Encoding': 'gzip, deflate',
@@ -20,10 +20,12 @@ class SchoolLogin:
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84'}
         self.session = requests.Session()
-        self.username = init_id['username']
-        self.password = init_id['password']
 
     def main_login(self):  # 网上办事大厅登录函数
+        with open('ID.yaml', 'r', encoding='utf-8') as f:
+            bs_id = yaml.load(f.read())['id']
+        username = bs_id['username']
+        password = bs_id['password']
         url1 = 'http://authserver.njmu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.njmu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.njmu.edu.cn%2Fnew%2Findex.html'
         headers1 = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36 Edg/92.0.902.67'}
@@ -32,9 +34,9 @@ class SchoolLogin:
         html = r.text
         LT = re.findall('name="lt" value="(.*)"', html)[0]
         key = re.findall('id="pwdDefaultEncryptSalt" value="(.*?)"', html)[0]
-        pwd = AESEncrypt(self.password, key)  # AES密码加密
+        pwd = AESEncrypt(password, key)  # AES密码加密
         execution = re.findall('name="execution" value="(.*?)"', html)[0]
-        data = {'username': self.username,
+        data = {'username': username,
                 'password': pwd,
                 'lt': LT,
                 'dllt': 'userNamePasswordLogin',
@@ -69,8 +71,8 @@ class Mail:
         self.dic = dic
 
     def mail_sender(self):  # 发送邮件
-        with open('ID.yaml', 'r') as f:
-            mail = yaml.load(f.read(), Loader=yaml.FullLoader)['mail']
+        with open('ID.yaml', 'r', encoding='utf-8') as f:
+            mail = yaml.load(f.read())['mail']
         sender = mail['sender']
         password = mail['password']
         receivers = mail['receivers']
@@ -80,9 +82,8 @@ class Mail:
         message['From'] = Header(self.dic['From'], 'utf-8')
         message['To'] = Header(self.dic['To'], 'utf-8')
         message['Subject'] = Header(self.dic['subject'], 'utf-8')
-
         server = smtplib.SMTP_SSL(smtp_server)
-        server.connect(smtp_server, port=465)
+        server.connect(smtp_server, port=994)
         server.login(sender, password)
         server.sendmail(sender, receivers, message.as_string())
         server.quit()

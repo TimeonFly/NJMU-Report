@@ -27,14 +27,19 @@ class InfoException(Exception):
         log(info)
 
 
+class TimeException(Exception):
+    """时间异常"""
+
+    def __init__(self, info):
+        log(info)
+
+
 class PostInfo(object):  # 提交函数，用于提交打卡信息
+
     def __init__(self):
         self.result = ''
         self.info = ''
-        with open('ID.yaml', 'r', encoding='utf-8') as f:
-            bs_id = yaml.load(f.read())['id']
-        self.username = bs_id['username']
-        s = SchoolLogin(bs_id)
+        s = SchoolLogin()
         self.cookie = s.main_login()
         self.dict = {}  # 该字典从旧提交信息中获取数据，并合并新构造的日期，为最终的提交参数
 
@@ -54,19 +59,31 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         value_info = []
         for string in strings:
             string = string.replace('/n', '')
-            value_info.append(re.findall(r'(?<=: ).*', string)[0])
-            key_info.append(re.findall(r'.*(?=: )', string)[0])
-            self.dict = dict(zip(key_info, value_info))
+            try:
+                value_info.append(re.findall(r'(?<=: ).*', string)[0])
+                key_info.append(re.findall(r'.*(?=: )', string)[0])
+            except IndexError:
+                value_info.append('')
+                key_info.append(re.findall(r'.*(?=:)', string)[0])
+            finally:
+                self.dict.update(dict(zip(key_info, value_info)))
 
     def create_info(self):  # 参数整合，形成最终提交的self.dict
         wid = self.get_wid()
         t = datetime.now()
         date1 = t.strftime("%Y-%m-%d")
         czrq = t.strftime("%Y-%m-%d %H:%M:%S")
-        s1, s2 = random.sample(range(1, 59), 2)
-        m1 = random.randint(1, 5)
-        ftime1 = ' 08:{:0>2}:{:0>2}'.format(m1, s1)
-        ftime2 = ' 08:{:0>2}:{:0>2}'.format(m1 + 2, s2)
+        with open('ID.yaml', 'r', encoding='utf-8') as f:
+            user_time = yaml.load(f.read())['time']
+        hour = int(user_time['hour'])
+        minute = int(user_time['minute'])
+        if hour in range(5, 11) and minute in range(0, 60):
+            pass
+        else:
+            raise TimeException('时间配置错误')
+        s1, s2 = random.sample(range(0, 60), 2)
+        ftime1 = ' {:0>2}:{:0>2}:{:0>2}'.format(hour, minute, s1)
+        ftime2 = ' {:0>2}:{:0>2}:{:0>2}'.format(hour, minute + 2, s2)
         created_at = date1 + ftime2
         fill_time = date1 + ftime1
         self.dict['WID'] = wid
@@ -86,10 +103,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         if info_save['modelName'] != 'T_HEALTH_DAILY_INFO':
             raise InfoException('modelName已更改')
         else:
-            new_dict = {}
             list1 = info_save['params']
-            for i in list1:
-                new_dict[i['name']] = i['caption']
+            new_dict = {i['name']: i['caption'] for i in list1}
             return new_dict
 
     def check(self):  # 此函数用于查询是否有新的问题，采用方法是新的问题是否包含在旧的字典之中
@@ -131,19 +146,18 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             p = requests.post(target_url, headers=headers, cookies=self.cookie)
             dict1 = json.loads(p.text)
             list1 = dict1['datas']['code']['rows']
-            dict2 = {}
-            for each_dict in list1:
-                dict2[each_dict['id']] = each_dict['name']
+            dict2 = {i['id']: i['name'] for i in list1}
             target_situation = target + '_DISPLAY'
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
 
-    def mail_sender(self):  # 发送邮件
+    def mail_send(self):  # 发送邮件
         mail_msg = """
         <p>{}</p>
         """.format(self.info)
         dic = {'From': '健康打卡', 'To': '通知', 'info': mail_msg, 'subject': self.result}
-        Mail(dic)
+        m = Mail(dic)
+        m.mail_sender()
 
     def main(self):  # 执行函数
         try:
@@ -152,6 +166,9 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.check()
         except InfoException:
             self.result = 'Fail'
+        except TimeException:
+            self.result = 'Fail'
+            print('您输入的时间有错误，请检查ID.yaml文件中的time配置！')
         else:
             url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/T_HEALTH_DAILY_INFO_SAVE.do'
             headers = {
@@ -162,7 +179,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             t = datetime.now()
             log(t.strftime('%m-%d') + '打卡成功')
         finally:
-            self.mail_sender()
+            self.mail_send()
 
 
 def main_handler(event, context):
