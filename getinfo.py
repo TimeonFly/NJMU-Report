@@ -1,7 +1,5 @@
 from common import SchoolLogin
 import requests
-import yaml
-from datetime import datetime
 import json
 
 
@@ -21,10 +19,7 @@ class GetInfo(object):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84'}
 
     def login(self):
-        with open('ID.yaml', 'r', encoding='utf-8') as f:
-            init_info = yaml.load(f.read())['id']
-        self.username = init_info['username']
-        s = SchoolLogin(init_info)
+        s = SchoolLogin()
         self.cookie = s.main_login()
 
     def get_info(self):
