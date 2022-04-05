@@ -4,7 +4,7 @@ import requests
 import json
 import random
 import sys
-from common import SchoolLogin, Mail
+from common import SchoolLogin, Mail, LoginError
 from datetime import datetime, timezone, timedelta
 import yaml
 
@@ -39,8 +39,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
     def __init__(self):
         self.result = ''
         self.info = ''
-        s = SchoolLogin()
-        self.cookie = s.main_login()
+        self.cookie = None
         self.dict = {}  # 该字典从旧提交信息中获取数据，并合并新构造的日期，为最终的提交参数
 
     def get_wid(self):
@@ -111,8 +110,10 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         new_dict = self.new_query()
         new_query = set(new_dict.keys())
         old_query = set(self.dict.keys())
-        if new_query - old_query != set():
-            self.info = '出现新的问题{}'.format(new_query - old_query)
+        dif_set = new_query - old_query
+        if dif_set != set():
+            dif_dic = {i: new_dict[i] for i in dif_set}
+            self.info = '出现新的问题{}'.format(dif_dic)
             raise InfoException(self.info)
         else:
             self.check_info()
@@ -157,10 +158,12 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         """.format(self.info)
         dic = {'From': '健康打卡', 'To': '通知', 'info': mail_msg, 'subject': self.result}
         m = Mail(dic)
-        m.mail_sender()
+        m.send()
 
     def main(self):  # 执行函数
         try:
+            s = SchoolLogin()
+            self.cookie = s.main_login()
             self.get_old_info()  # 获取旧的提交数据
             self.create_info()
             self.check()
@@ -168,7 +171,11 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.result = 'Fail'
         except TimeException:
             self.result = 'Fail'
-            print('您输入的时间有错误，请检查ID.yaml文件中的time配置！')
+            log('您输入的时间有错误，请检查ID.yaml文件中的time配置！')
+        except LoginError:
+            self.result = 'Fail'
+            self.info = '账号或密码错误，登录失败'
+            log(self.info)
         else:
             url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/T_HEALTH_DAILY_INFO_SAVE.do'
             headers = {

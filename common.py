@@ -8,6 +8,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 
 
+class LoginError(Exception):
+    pass
+
+
 class SchoolLogin:
     def __init__(self):
         self.headers = {
@@ -32,13 +36,13 @@ class SchoolLogin:
         r = self.session.get(url1, headers=headers1)
         r.encoding = 'utf-8'
         html = r.text
-        LT = re.findall('name="lt" value="(.*)"', html)[0]
+        lt = re.findall('name="lt" value="(.*)"', html)[0]
         key = re.findall('id="pwdDefaultEncryptSalt" value="(.*?)"', html)[0]
         pwd = AESEncrypt(password, key)  # AES密码加密
         execution = re.findall('name="execution" value="(.*?)"', html)[0]
         data = {'username': username,
                 'password': pwd,
-                'lt': LT,
+                'lt': lt,
                 'dllt': 'userNamePasswordLogin',
                 'execution': execution,
                 '_eventId': 'submit',
@@ -46,22 +50,24 @@ class SchoolLogin:
         headers2 = self.headers.update({'Host': 'authserver.njmu.edu.cn',
                                         'Referer': 'http://authserver.njmu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.njmu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.njmu.edu.cn%2Fnew%2Findex.html'})
         res1 = self.session.post(url1, headers=headers2, data=data, allow_redirects=False)  # post请求
-        Location = res1.headers["Location"]
+        if res1.status_code != 302:
+            raise LoginError
+        location = res1.headers["Location"]
         headers3 = self.headers.update({'Host': 'http://authserver.njmu.edu.cn/',
                                         'Referer': 'http://authserver.njmu.edu.cn/'})
-        res2 = self.session.get(Location, headers=headers3, allow_redirects=False)  # get请求 302
-        Location = res2.headers["Location"]
+        res2 = self.session.get(location, headers=headers3, allow_redirects=False)  # get请求 302
+        location = res2.headers["Location"]
         headers4 = self.headers.update({'Host': 'ehall.njmu.edu.cn',
                                         'Referer': 'http://authserver.njmu.edu.cn/'})
-        self.session.get(Location, headers=headers4, allow_redirects=False)  # get请求 200，此三部完成网上办事大厅的登录
+        self.session.get(location, headers=headers4, allow_redirects=False)  # get请求 200，此三部完成网上办事大厅的登录
         # 健康打卡
         amp = '6276111169665617'  # 教务的amp
         destination = 'http://ehall.njmu.edu.cn/appShow?appId={}&_={}'.format(amp, int(time.time()))
         headers5 = self.headers.update({'Host': 'ehall.njmu.edu.cn',
                                         'Referer': 'http://ehall.njmu.edu.cn/new/index.html'})
         res4 = self.session.get(destination, headers=headers5, allow_redirects=False)
-        Location = res4.headers["Location"]
-        self.session.get(Location, headers=headers5)
+        location = res4.headers["Location"]
+        self.session.get(location, headers=headers5)
         cookies_dict = requests.utils.dict_from_cookiejar(self.session.cookies)
         return cookies_dict
 
@@ -70,7 +76,7 @@ class Mail:
     def __init__(self, dic):
         self.dic = dic
 
-    def mail_sender(self):  # 发送邮件
+    def send(self):  # 发送邮件
         with open('ID.yaml', 'r', encoding='utf-8') as f:
             mail = yaml.load(f.read())['mail']
         sender = mail['sender']
