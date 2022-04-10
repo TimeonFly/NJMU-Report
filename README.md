@@ -3,7 +3,7 @@
     <img src="https://github.com/TimeonFly/NJMU-Report/blob/main/images/logo.png"  alt="Logo"/>
 </div>
 
-# 😶严正声明
+# ⚠️严正声明
 <span style="color: red; ">学校的健康打卡制度是国家疫情防控的重要一环,违反疫情防控有关规定需承担刑事责任.此项目仅供学习交流,不可用于违法违规用途.使用本项目造成的任何后果使用者自行承担.</span>
 # ⚙️快速使用
 
@@ -14,14 +14,14 @@
 4. 运行`getinfo.py`后，`疫情打卡提交信息.txt`文件已有内容后，压缩文件夹，待上传云函数
 # 🧩环境依赖
 
-由于腾讯云函数目前仅支持python3.6及3.7版本，且3.7版本缺乏必要的依赖库，因此本项目使用python3.6开发。建议您使用[Anaconda](https://www.anaconda.com)创建虚拟环境，并进行虚拟环境下依赖库管理，建议使用Pycharm编辑并运行代码。
+由于腾讯云函数目前仅支持python3.6及3.7版本，且3.7版本缺乏必要的依赖库，因此本项目使用Python3.6开发。建议您使用[Anaconda](https://www.anaconda.com)创建虚拟环境，并进行虚拟环境下依赖库管理，建议使用Pycharm编辑并运行代码。
 
 - Anaconda
 
    解压`run.zip`后，在解压的文件夹目录下打开`cmd`运行此命令`conda install --yes --file requirements.txt`,<span id=setup>安装依赖</span>。关于将conda添加到环境变量，您可以访问[此网页](https://blog.csdn.net/Python_Smily/article/details/105993200) 。
 - PIP
    
-   如果您使用的是pip安装指令，在解压的文件夹目录下打卡`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
+   如果您使用的是pip安装指令，在解压的文件夹目录下打开`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
 
 - 项目依赖的库如下：(详见`requirements.txt`文件)
 
@@ -35,7 +35,7 @@
 在`ID.yaml`文件中按备注填写网上办事大厅的用户名(username)、密码(password)；发送邮件的邮箱(sender)，邮件授权码(password)，接受邮件的邮箱地址(receivers)，以及邮箱smtp服务器(smtp_server)等信息。
 
 # ☁️云函数部署
-使用[腾讯云函数](https://cloud.tencent.com/product/scf '腾讯云函数')实现自动打卡,部署步骤如下：
+使用[腾讯云函数](https://cloud.tencent.com/product/scf '腾讯云函数')实现自动打卡,部署步骤如下：（如果您无法看到图片，您可以参考[此链接](https://zhuanlan.zhihu.com/p/139219691 '')修改hosts文件，或是采用科学上网）
     
 1. 点击上方腾讯云函数超链接，注册认证后，进入控制台，点击左边的层。
 
@@ -56,9 +56,12 @@
     
     ![step5](https://github.com/TimeonFly/NJMU-Report/blob/main/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
-# 📧消息提醒
+# 📰消息提醒
 本项目使用邮件提醒您自动打卡是否成功，可能日后会有微信提醒。请按打卡配置配置好`ID.yaml`文件，邮件授权码以163邮箱为例。
 
    ![step6](https://github.com/TimeonFly/NJMU-Report/blob/main/images/6.png)
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
+
+# 📨  联系我
+如果您有建议或者bug提交，您可以通过Issues提交
