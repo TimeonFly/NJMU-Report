@@ -3,6 +3,7 @@ import requests
 import time
 import smtplib
 import yaml
+import json
 from encrypt import AESEncrypt
 from email.mime.text import MIMEText
 from email.header import Header
@@ -93,3 +94,20 @@ class Mail:
         server.login(sender, password)
         server.sendmail(sender, receivers, message.as_string())
         server.quit()
+
+
+def get_info(cookies):
+    get_url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/getMyDailyReportDatas.do'
+    headers1 = {'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+                'Connection': 'keep-alive',
+                'Host': 'ehall.njmu.edu.cn',
+                'Origin': 'http://ehall.njmu.edu.cn',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84',
+                'Referer': 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/index.do?amp_sec_version_=1&gid_=YmliV2M2Skp0Z1BjV2RBVkl4YjZIMGZzSG5DSFdjMllLWnZuVVU3SkFxU0V0TUtkT0NRVUR1UDd6VnpQREd3N1hpN2RVQkNkblNmNFpzNE5ZM3BPQnc9PQ&EMAP_LANG=zh&THEME=golden'}
+    data = {'pageNumber': '1',
+            'pageSize': '10'}
+    r = requests.post(get_url, headers=headers1, cookies=cookies, data=data)
+    info_dict = json.loads(r.text)['datas']['getMyDailyReportDatas']['rows'][0]
+    return info_dict

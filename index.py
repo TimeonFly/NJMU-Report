@@ -4,7 +4,7 @@ import requests
 import json
 import random
 import sys
-from common import SchoolLogin, Mail, LoginError
+from common import SchoolLogin, Mail, LoginError, get_info
 from datetime import datetime, timezone, timedelta
 import yaml
 
@@ -152,6 +152,17 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
 
+    def confirm(self):
+        info = get_info(self.cookie)
+        date = info['NEED_CHECKIN_DATE']
+        t = datetime.now()
+        date1 = t.strftime("%Y-%m-%d")
+        if date == date1:
+            pass
+        else:
+            self.info = '出现未知错误，今日打卡失败！'
+            raise InfoException
+
     def mail_send(self):  # 发送邮件
         mail_msg = """
         <p>{}</p>
@@ -167,6 +178,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.get_old_info()  # 获取旧的提交数据
             self.create_info()
             self.check()
+            self.confirm()
         except InfoException:
             self.result = 'Fail'
         except TimeException:
