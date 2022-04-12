@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "==2.27.1"
+pyyaml = "==3.12"
+pydes = "==2.0.1"
+pycryptodome = "==3.10.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

@@ -1,0 +1,4 @@
+requests==2.27.1
+pyyaml==3.12
+pydes==2.0.1
+pycryptodome==3.10.1

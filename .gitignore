@@ -1,0 +1,11 @@
+### Example user template template
+### Example user template
+
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+ID.yaml
+疫情打卡提交信息.txt
