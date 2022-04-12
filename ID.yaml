@@ -1,0 +1,14 @@
+id:
+    username: ''  # 学号
+    password: ''  # 网上办事大厅登录密码
+mail:
+    sender: ''
+    password: ''
+    receivers: ''
+    smtp_server: ''
+time:  # 此参数为自动打卡的时间，请与腾讯函数函数触发设置的时间保持同步
+    hour: ''  # 打卡的小时，请设置为[5,10]区间内的正整数
+    minute: ''  # 打卡的分钟，请设置为[0,60)区间内的正整数
+    
+
+    
