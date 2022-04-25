@@ -21,7 +21,7 @@ def log(content):
 
 
 class InfoException(Exception):
-    """信息更改异常"""
+    """信息异常"""
 
     def __init__(self, info):
         log(info)
@@ -48,8 +48,13 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         url = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock/getMyTodayReportWid.do'
         params = {'pageNumber': '1'}
         p = requests.post(url, headers=headers, cookies=self.cookie, params=params)
-        info_dict = json.loads(p.text)['datas']['getMyTodayReportWid']['rows'][0]
-        return info_dict['WID']
+        try:
+            info_dict = json.loads(p.text)['datas']['getMyTodayReportWid']['rows'][0]
+        except IndexError:
+            self.info = 'WID参数获取失败，请稍后再尝试...'
+            raise InfoException(self.info)
+        else:
+            return info_dict['WID']
 
     def get_old_info(self):  # 从文件中获取旧数据，旧数据由浏览器post请求获取
         with open('疫情打卡提交信息.txt', 'r', encoding='utf-8') as f:
