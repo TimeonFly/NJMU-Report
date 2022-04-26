@@ -9,7 +9,8 @@
 </div>
 
 # ⚠️严正声明
-<span style="color: red; ">学校的健康打卡制度是国家疫情防控的重要一环,违反疫情防控有关规定需承担刑事责任.此项目仅供学习交流,不可用于违法违规用途.使用本项目造成的任何后果使用者自行承担.</span>
+**学校的健康打卡制度是国家疫情防控的重要一环,违反疫情防控有关规定需承担刑事责任.此项目仅供学习交流,不可用于违法违规用途.使用本项目造成的任何后果使用者自行承担**
+
 # ⚙️快速使用
 
 本项目通过腾讯云函数部署，可以实现每日健康日报的自动打卡，防止您因繁忙的工作或学习，亦或是睡懒觉而忘记了健康日报的填写。使用步骤如下
@@ -27,7 +28,7 @@
 
     解压`run.zip`后，在解压的文件夹目录下打开`cmd`运行此命令`conda install --yes --file requirements.txt`,<span id=setup>安装依赖</span>。关于将conda添加到环境变量，您可以访问[此网页](https://blog.csdn.net/Python_Smily/article/details/105993200) 。
 - PIP
-   
+  
     如果您使用的是pip安装指令，在解压的文件夹目录下打开`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
 - pipenv
 
@@ -62,15 +63,34 @@
 
     ![step4](https://github.com/TimeonFly/NJMU-Report/blob/master/images/4.png)
 5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上8点05分执行，如果需要自定义，请在`index.py`中同步修改`create_info`函数中的参数，默认是8点05分。
-    
+   
    `0 5 8 * * * *`
-    
+   
     ![step5](https://github.com/TimeonFly/NJMU-Report/blob/master/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
 # 📰消息提醒
 本项目使用邮件提醒您自动打卡是否成功，可能日后会有微信提醒。请按打卡配置配置好`ID.yaml`文件，邮件授权码以163邮箱为例。
 
    ![step6](https://github.com/TimeonFly/NJMU-Report/blob/master/images/6.png)
+
+# 🖥️开发者
+
+如果你也懂得一些`python`知识，欢迎`fork`...定制属于你自己的脚本
+
+学校的健康日报打卡有多个入口：
+
+- 今日校园
+- 微门户
+- 网上办事大厅
+
+由于安卓抓包较为繁琐，所以本项目是基于网上办事大厅这个入口开发的，如果代码运行有问题，你可以通过网上办事大厅进入健康日报打卡，按下F12打开开发者工具，进行抓包分析。此外，**苏康码的截图需要浏览器渲染**，受制于腾讯云函数的限制，很难在云函数中实现，如果你有好的解决方法，欢迎提交commit
+
+# 🎯目标
+
+- [ ] 是否需要截图验证
+- [ ] **苏康码截图**
+- [ ] 行程码截图
+
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 
