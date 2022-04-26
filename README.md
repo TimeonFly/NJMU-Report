@@ -3,8 +3,9 @@
 </div>
 
 <div style="text-align: center;">
-    <img alt="GitHub Pipenv locked Python version" src="https://img.shields.io/github/pipenv/locked/python-version/TimeonFly/NJMU-Report">
-    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/TimeonFly/NJMU-Report?style=social">
+    <img alt="GitHub Pipenv locked Python version" src="https://img.shields.io/github/pipenv/locked/python-version/TimeonFly/NJMU-Report?style=flat-square">
+    <img alt="GitHub" src="https://img.shields.io/github/license/TimeonFly/NJMU-Report?style=flat-square">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/TimeonFly/NJMU-Report?style=flat-square">
 </div>
 
 # ⚠️严正声明
