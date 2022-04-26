@@ -90,7 +90,8 @@
 - [ ] 是否需要截图验证
 - [ ] **苏康码截图**
 - [ ] 行程码截图
-
+- [ ] 微信打卡提醒
+- [ ] 时间参数匹配
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 
