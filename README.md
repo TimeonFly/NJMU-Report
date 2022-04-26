@@ -73,5 +73,7 @@
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 
+感谢JetBrains提供的 PyCharm 教育版软件
+
 # 📨  联系我
 如果您有建议或者bug提交，您可以通过Issues提交
