@@ -49,27 +49,27 @@
     
 1. 点击上方腾讯云函数超链接，注册认证后，进入控制台，点击左边的层。
 
-    ![step1](https://github.com/TimeonFly/NJMU-Report/blob/main/images/1.png)
+    ![step1](https://github.com/TimeonFly/NJMU-Report/blob/master/images/1.png)
 
 2. 点击新建，名称随意，然后点击上传zip，选择release中的dependency.zip上传，然后选择运行环境python3.6，然后点击确定。
 
-    ![step2](https://github.com/TimeonFly/NJMU-Report/blob/main/images/2.png)
+    ![step2](https://github.com/TimeonFly/NJMU-Report/blob/master/images/2.png)
 3. 点击左边的函数服务，新建云函数，名称随意，运行环境选择python3.6，创建方式选择空白函数，按如下步骤后，点击完成。
 
-    ![step3](https://github.com/TimeonFly/NJMU-Report/blob/main/images/3.png)
+    ![step3](https://github.com/TimeonFly/NJMU-Report/blob/master/images/3.png)
 4. 点击层管理，点击绑定，选中刚刚创建的层，点击确定。
 
-    ![step4](https://github.com/TimeonFly/NJMU-Report/blob/main/images/4.png)
+    ![step4](https://github.com/TimeonFly/NJMU-Report/blob/master/images/4.png)
 5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上8点05分执行，如果需要自定义，请在`index.py`中同步修改`create_info`函数中的参数，默认是8点05分。
     
    `0 5 8 * * * *`
     
-    ![step5](https://github.com/TimeonFly/NJMU-Report/blob/main/images/5.png)
+    ![step5](https://github.com/TimeonFly/NJMU-Report/blob/master/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
 # 📰消息提醒
 本项目使用邮件提醒您自动打卡是否成功，可能日后会有微信提醒。请按打卡配置配置好`ID.yaml`文件，邮件授权码以163邮箱为例。
 
-   ![step6](https://github.com/TimeonFly/NJMU-Report/blob/main/images/6.png)
+   ![step6](https://github.com/TimeonFly/NJMU-Report/blob/master/images/6.png)
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 
