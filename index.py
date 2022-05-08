@@ -212,4 +212,4 @@ def main_handler(event, context):
     c.main()
 
 
-main_handler(None, None)
+main_handler(None, None)  # 本地测试使用，上传云函数时请注释或删除掉
