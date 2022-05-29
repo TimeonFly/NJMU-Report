@@ -153,6 +153,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             dict1 = json.loads(p.text)
             list1 = dict1['datas']['code']['rows']
             dict2 = {i['id']: i['name'] for i in list1}
+            dict2.update({'': ''})
             target_situation = target + '_DISPLAY'
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
