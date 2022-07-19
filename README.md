@@ -53,7 +53,9 @@
 **目前腾讯云函数已开始进行收费，新用户前6个月免费，建议通过学生身份购买学生优惠的套餐**
 
 使用[腾讯云函数](https://cloud.tencent.com/product/scf '腾讯云函数')实现自动打卡,部署步骤如下：（如果您无法看到图片，您可以参考[此链接](https://zhuanlan.zhihu.com/p/139219691 '')修改hosts文件，或是采用科学上网）
-    
+<details>
+<summary>展开查看</summary>
+
 1. 点击上方腾讯云函数超链接，注册认证后，进入控制台，点击左边的层。
 
     ![step1](https://github.com/TimeonFly/NJMU-Report/blob/master/images/1.png)
@@ -73,6 +75,9 @@
    
     ![step5](https://github.com/TimeonFly/NJMU-Report/blob/master/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
+
+</details>
+
 # 📰消息提醒
 本项目使用邮件提醒您自动打卡是否成功，可能日后会有微信提醒。请按打卡配置配置好`ID.yaml`文件，邮件授权码以163邮箱为例。
 
