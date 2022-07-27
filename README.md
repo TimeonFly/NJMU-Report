@@ -13,7 +13,7 @@
 
 # ⚙️快速使用
 
-本项目通过腾讯云函数部署，可以实现每日健康日报的自动打卡，防止您因繁忙的工作或学习，亦或是睡懒觉而忘记了健康日报的填写。使用步骤如下
+本项目通过腾讯云函数部署，可以实现每日健康日报的自动打卡，防止您因繁忙的工作或学习，亦或是睡懒觉而忘记了健康日报的填写。使用步骤如下：
 1. 下载Release中的`depency.zip`文件，此为云函数依赖文件
 2. 下载Release中的`run.zip`文件，此为运行函数
 3. **请注意run.zip中的文件版本较为落后，一些bug可能未及时修复，建议clone本项目到本地或是下载源码**<br>
@@ -27,18 +27,23 @@
 
 由于腾讯云函数目前仅支持python3.6及3.7版本，且3.7版本缺乏必要的依赖库，因此本项目使用Python3.6开发。建议您使用[Anaconda](https://www.anaconda.com)创建虚拟环境，并进行虚拟环境下依赖库管理，建议使用Pycharm编辑并运行代码。
 
-- Anaconda
+## Anaconda
 
-    解压`run.zip`后，在解压的文件夹目录下打开`cmd`运行此命令`conda install --yes --file requirements.txt`,<span id=setup>安装依赖</span>。关于将conda添加到环境变量，您可以访问[此网页](https://blog.csdn.net/Python_Smily/article/details/105993200) 。
-- PIP
+解压`run.zip`后，在解压的文件夹目录下打开`cmd`运行此命令`conda install --yes --file requirements.txt`,<span id=setup>安装依赖</span>。关于将conda添加到环境变量，您可以访问[此网页](https://blog.csdn.net/Python_Smily/article/details/105993200) 。
+
+## PIP
   
-    如果您使用的是pip安装指令，在解压的文件夹目录下打开`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
-- pipenv
+如果您使用的是pip安装指令，在解压的文件夹目录下打开`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
 
-    在Pycharm中使用pipenv创建环境时，会自动根据`requirements.txt`文件安装所需依赖，如果下载依赖库速度慢，您可以科学上网或将`Pipfile`文件中的`[[source]]`下的`url`更改为`https://mirrors.aliyun.com/pypi/simple`，
+## pipenv
+
+在Pycharm中使用pipenv创建环境时，会自动根据`requirements.txt`文件安装所需依赖，如果下载依赖库速度慢，您可以科学上网或将`Pipfile`文件中的`[[source]]`下的`url`更改为`https://mirrors.aliyun.com/pypi/simple`，
 有关pipenv环境的创建及激活，您可以参考[此链接](https://zhuanlan.zhihu.com/p/37581807 )或是自行搜索
 
-- 项目依赖的库如下：(详见`requirements.txt`文件)
+## 项目依赖的库如下：
+详见`requirements.txt`文件
+  
+**由于腾讯云函数的限制，此处的`pyyaml`库并不是最新版本，使用的是旧版本开发，如果使用最新版本可能出现报错的情况**
 
    ```
    requests==2.27.1
@@ -109,4 +114,4 @@
 感谢JetBrains提供的 PyCharm 教育版软件
 
 # 📨  联系我
-如果您有建议或者bug提交，您可以通过Issues提交
+如果您有建议或者bug提交，您可以通过Issues提交或是通过此邮箱timeomfly@gmail.com联系我

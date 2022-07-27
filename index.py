@@ -158,7 +158,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             dict3 = {self.dict[target]: self.dict[target_situation]}
             self.assert_dict(dict3, dict2)
 
-    def confirm(self):
+    def confirm(self):  # 此函数用于确认今天是否打卡过，方法是检查健康打卡页面是否有今天打卡的日期，调用的是common模块里的get_info函数
         info = get_info(self.cookie)
         date = info['NEED_CHECKIN_DATE']
         t = datetime.now()
@@ -167,7 +167,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             pass
         else:
             self.info = '出现未知错误，今日打卡失败！'
-            raise InfoException
+            raise InfoException(self.info)
 
     def mail_send(self):  # 发送邮件
         mail_msg = """
@@ -204,7 +204,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             t = datetime.now()
             log(t.strftime('%m-%d') + '打卡成功')
         finally:
-            self.mail_send()
+            pass
+            # self.mail_send()
 
 
 def main_handler(event, context):
