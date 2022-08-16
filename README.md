@@ -32,7 +32,7 @@
 解压`run.zip`后，在解压的文件夹目录下打开`cmd`运行此命令`conda install --yes --file requirements.txt`,<span id=setup>安装依赖</span>。关于将conda添加到环境变量，您可以访问[此网页](https://blog.csdn.net/Python_Smily/article/details/105993200) 。
 
 ## PIP
-  
+
 如果您使用的是pip安装指令，在解压的文件夹目录下打开`cmd`运行此命令`pip install -r requirements.txt`，以安装依赖，关于将pip添加到环境变量，您可以访问[此网页](https://blog.csdn.net/NY_YN/article/details/111462947) 。
 
 ## pipenv
@@ -42,7 +42,7 @@
 
 ## 项目依赖的库如下：
 详见`requirements.txt`文件
-  
+
 **由于腾讯云函数的限制，此处的`pyyaml`库并不是最新版本，使用的是旧版本开发，如果使用最新版本可能出现报错的情况**，如有报错请根据报错信息，自行搜索替换函数
 
    ```
@@ -107,7 +107,7 @@
 - [ ] **苏康码截图**
 - [ ] 行程码截图
 - [ ] 微信打卡提醒
-- [√] 时间参数匹配
+- [x] 时间参数匹配
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 
