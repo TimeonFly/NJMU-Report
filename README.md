@@ -18,7 +18,7 @@
 2. 下载Release中的`run.zip`文件，此为运行函数
 3. **请注意run.zip中的文件版本较为落后，一些bug可能未及时修复，建议clone本项目到本地或是下载源码**<br>
 使用以下命令clone本项目到本地<br>
-````git clone https://github.com/TimeonFly/NJMU-Report.git````
+`git clone https://github.com/TimeonFly/NJMU-Report.git`
 4. 解压`run.zip`或clone本项目到本地后，[安装好依赖](#setup)，填写`ID.yaml`文件 ，填写后运行`getinfo.py`，此函数用于获取您昨天填写的信息，并自动去除几个由`index.py`文件自动生成的参数
 5. 运行`getinfo.py`后，`疫情打卡提交信息.txt`文件已有内容后，压缩文件夹，待上传云函数
 6. `run.zip`文件中的`index.py`等文件版本较为落后，建议您下载源文件，替换`run.zip`文件中的文件以保持最新版本
@@ -43,7 +43,7 @@
 ## 项目依赖的库如下：
 详见`requirements.txt`文件
   
-**由于腾讯云函数的限制，此处的`pyyaml`库并不是最新版本，使用的是旧版本开发，如果使用最新版本可能出现报错的情况**
+**由于腾讯云函数的限制，此处的`pyyaml`库并不是最新版本，使用的是旧版本开发，如果使用最新版本可能出现报错的情况**，如有报错请根据报错信息，自行搜索替换函数
 
    ```
    requests==2.27.1
@@ -74,9 +74,9 @@
 4. 点击层管理，点击绑定，选中刚刚创建的层，点击确定。
 
     ![step4](https://github.com/TimeonFly/NJMU-Report/blob/master/images/4.png)
-5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上8点05分执行，如果需要自定义，请在`index.py`中同步修改`create_info`函数中的参数，默认是8点05分。
+5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上7点5-55分的某一分钟执行，如果需要自定义，请参考[腾讯云函数cron表达式帮助文档](https://cloud.tencent.com/document/product/583/9708#cron-.E8.A1.A8.E8.BE.BE.E5.BC.8F)
    
-   `0 5 8 * * * *`
+   `0 5-55 7 * * * *`
    
     ![step5](https://github.com/TimeonFly/NJMU-Report/blob/master/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
@@ -107,7 +107,7 @@
 - [ ] **苏康码截图**
 - [ ] 行程码截图
 - [ ] 微信打卡提醒
-- [ ] 时间参数匹配
+- [√] 时间参数匹配
 # ❤️致谢
 此项目参考了[@ZimoLoveShuang](https://github.com/ZimoLoveShuang 'ZimoLoveShuang')大佬的 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit 'auto-submit')项目，尤其是本项目的`encrypt.py`文件，非常感谢。
 

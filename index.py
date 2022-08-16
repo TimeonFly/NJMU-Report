@@ -75,21 +75,14 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
     def create_info(self):  # 参数整合，形成最终提交的self.dict
         wid = self.get_wid()
         t = datetime.now()
+        if t.hour >= 11:
+            t = t.replace(hour=random.randint(7, 10))
         date1 = t.strftime("%Y-%m-%d")
         czrq = t.strftime("%Y-%m-%d %H:%M:%S")
-        with open('ID.yaml', 'r', encoding='utf-8') as f:
-            user_time = yaml.load(f.read())['time']
-        hour = int(user_time['hour'])
-        minute = int(user_time['minute'])
-        if hour in range(5, 11) and minute in range(0, 60):
-            pass
-        else:
-            raise TimeException('时间配置错误')
-        s1, s2 = random.sample(range(0, 60), 2)
-        ftime1 = ' {:0>2}:{:0>2}:{:0>2}'.format(hour, minute, s1)
-        ftime2 = ' {:0>2}:{:0>2}:{:0>2}'.format(hour, minute + 2, s2)
-        created_at = date1 + ftime2
-        fill_time = date1 + ftime1
+        created_at = t + timedelta(seconds=-2)
+        created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
+        fill_time = t + timedelta(minutes=-2, seconds=random.randint(-59, -1))
+        fill_time = fill_time.strftime('%Y-%m-%d %H:%M:%S')
         self.dict['WID'] = wid
         self.dict['CZRQ'] = czrq
         self.dict['CREATED_AT'] = created_at
@@ -111,7 +104,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             new_dict = {i['name']: i['caption'] for i in list1}
             return new_dict
 
-    def check(self):  # 此函数用于查询是否有新的问题，采用方法是新的问题是否包含在旧的字典之中
+    def check_question(self):  # 此函数用于查询是否有新的问题，采用方法是新的问题是否包含在旧的字典之中
         new_dict = self.new_query()
         new_query = set(new_dict.keys())
         old_query = set(self.dict.keys())
@@ -124,13 +117,11 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.check_info()
 
     def assert_dict(self, given, result):  # 此函数用于判读given字典是否包含在result字典之中
-        for key in given:
-            if (key in result) & (result[key] == given[key]):
-                continue
-            else:
-                # print('{}不在{}之中'.format(given,result))
-                self.info = '信息已发生更改，{}不在{}之中'.format(given, result)
-                raise InfoException(self.info)
+        set1 = set(given.items())
+        set2 = set(result.items())
+        if not set1.issubset(set2):  # 将字典转换成集合以后，判断旧数据是否是新数据的子集，采用的是issubset()函数
+            self.info = '信息已发生更改，{}不在{}之中'.format(given, result)
+            raise InfoException(self.info)
 
     def check_info(self):  # 此函数用于查询旧的选项是否在今日的选项之中
         target_list = ['TODAY_SITUATION',
@@ -183,7 +174,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.cookie = s.main_login()
             self.get_old_info()  # 获取旧的提交数据
             self.create_info()
-            self.check()
+            self.check_question()
             self.confirm()
         except InfoException:
             self.result = 'Fail'
