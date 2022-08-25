@@ -6,7 +6,6 @@ import random
 import sys
 from common import SchoolLogin, Mail, LoginError, get_info
 from datetime import datetime, timezone, timedelta
-import yaml
 
 
 def get_time_str():
@@ -79,7 +78,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             t = t.replace(hour=random.randint(7, 10))
         date1 = t.strftime("%Y-%m-%d")
         czrq = t.strftime("%Y-%m-%d %H:%M:%S")
-        created_at = t + timedelta(seconds=-2)
+        created_at = t + timedelta(seconds=-1)
         created_at = created_at.strftime('%Y-%m-%d %H:%M:%S')
         fill_time = t + timedelta(minutes=-2, seconds=random.randint(-59, -1))
         fill_time = fill_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -157,7 +156,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         if date == date1:
             pass
         else:
-            self.info = '出现未知错误，今日打卡失败！'
+            self.info = '出现错误，今日打卡失败！'
             raise InfoException(self.info)
 
     def mail_send(self):  # 发送邮件
@@ -175,7 +174,6 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.get_old_info()  # 获取旧的提交数据
             self.create_info()
             self.check_question()
-            self.confirm()
         except InfoException:
             self.result = 'Fail'
         except TimeException:
@@ -195,8 +193,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             t = datetime.now()
             log(t.strftime('%m-%d') + '打卡成功')
         finally:
-            pass
-            # self.mail_send()
+            self.confirm()
+            self.mail_send()
 
 
 def main_handler(event, context):
