@@ -203,4 +203,5 @@ def main_handler(event, context):
     c.main()
 
 
-main_handler(None, None)  # 本地测试使用，上传云函数时请注释或删除掉
+if __name__ == '__main__':
+    main_handler(None, None)
