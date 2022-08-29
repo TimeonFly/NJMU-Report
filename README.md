@@ -74,9 +74,9 @@
 4. 点击层管理，点击绑定，选中刚刚创建的层，点击确定。
 
     ![step4](https://github.com/TimeonFly/NJMU-Report/blob/master/images/4.png)
-5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上7点5-55分的某一分钟执行，如果需要自定义，请参考[腾讯云函数cron表达式帮助文档](https://cloud.tencent.com/document/product/583/9708#cron-.E8.A1.A8.E8.BE.BE.E5.BC.8F)
+5. 左边点击触发管理，创建触发器，名称随意，触发周期选择自定义，然后配置cron表达式，下面的表达式表示每天早上7点55分执行，如果需要自定义，请参考[腾讯云函数cron表达式帮助文档](https://cloud.tencent.com/document/product/583/9708#cron-.E8.A1.A8.E8.BE.BE.E5.BC.8F)
    
-   `0 5-55 7 * * * *`
+   `0 55 7 * * * *`
    
     ![step5](https://github.com/TimeonFly/NJMU-Report/blob/master/images/5.png)
 6. 然后就可以测试云函数了，绿色代表云函数执行成功，红色代表云函数执行失败（失败的原因大部分是由于依赖造成的）。返回结果是success.，代表自动提交成功，如遇到问题，请仔细查看日志。
