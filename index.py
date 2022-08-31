@@ -53,7 +53,7 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             self.info = 'WID参数获取失败，请稍后再尝试...'
             raise InfoException(self.info)
         else:
-            return info_dict['WID']
+            return info_dict
 
     def get_old_info(self):  # 从文件中获取旧数据，旧数据由浏览器post请求获取
         with open('疫情打卡提交信息.txt', 'r', encoding='utf-8') as f:
@@ -72,7 +72,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
                 self.dict.update(dict(zip(key_info, value_info)))
 
     def create_info(self):  # 参数整合，形成最终提交的self.dict
-        wid = self.get_wid()
+        wid_dict = self.get_wid()
+        wid = wid_dict['WID']
         t = datetime.now()
         if t.hour >= 11:
             t = t.replace(hour=random.randint(7, 10))
@@ -88,23 +89,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
         self.dict['FILL_TIME'] = fill_time
         self.dict['NEED_CHECKIN_DATE'] = date1
 
-    def new_query(self):  # 此函数用于查询是否有新的url指向，返回的是今天需要提交的问题
-        url1 = 'http://ehall.njmu.edu.cn/qljfwappnew/sys/lwWiseduHealthInfoDailyClock/modules/healthClock.do'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62'}
-        params = {'*json': '1'}
-        p = requests.post(url1, headers=headers, cookies=self.cookie, params=params)
-        dict1 = json.loads(p.text)
-        info_save = dict1['models'][1]
-        if info_save['modelName'] != 'T_HEALTH_DAILY_INFO':
-            raise InfoException('modelName已更改')
-        else:
-            list1 = info_save['params']
-            new_dict = {i['name']: i['caption'] for i in list1}
-            return new_dict
-
     def check_question(self):  # 此函数用于查询是否有新的问题，采用方法是新的问题是否包含在旧的字典之中
-        new_dict = self.new_query()
+        new_dict = self.get_wid()
         new_query = set(new_dict.keys())
         old_query = set(self.dict.keys())
         dif_set = new_query - old_query
@@ -172,8 +158,8 @@ class PostInfo(object):  # 提交函数，用于提交打卡信息
             s = SchoolLogin()
             self.cookie = s.main_login()
             self.get_old_info()  # 获取旧的提交数据
-            self.create_info()
             self.check_question()
+            self.create_info()
         except InfoException:
             self.result = 'Fail'
         except TimeException:

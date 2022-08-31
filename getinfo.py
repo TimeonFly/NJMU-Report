@@ -16,7 +16,8 @@ def parse(info):
             print(line, file=f)
 
 
-s = SchoolLogin()
-cookies = s.main_login()
-info_dict = get_info(cookies)
-parse(info_dict)
+if __name__ == '__main__':
+    s = SchoolLogin()
+    cookies = s.main_login()
+    info_dict = get_info(cookies)
+    parse(info_dict)
