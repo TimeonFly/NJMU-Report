@@ -8,6 +8,7 @@
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/TimeonFly/NJMU-Report?style=flat-square">
 </div>
 
+**感谢您的使用，NJMU打卡已经成为历史，本项目不再维护，仅供学习。**
 # ⚠️严正声明
 **学校的健康打卡制度是国家疫情防控的重要一环,违反疫情防控有关规定需承担刑事责任.此项目仅供学习交流,不可用于违法违规用途.使用本项目造成的任何后果使用者自行承担**
 
